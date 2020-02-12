@@ -2,7 +2,7 @@ import re
 import string
 from nltk.tokenize.casual import TweetTokenizer
 from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import stop_words
+# from sklearn.feature_extraction.text import stop_words
 from unidecode import unidecode
 
 def remove_bad_characters(chars):
