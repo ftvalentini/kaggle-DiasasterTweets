@@ -39,8 +39,9 @@ def full_clean_text(chars):
     chars = re.sub(' +', ' ', chars)
     return chars.strip()
 
-def tokenize(chars):
-    """ Tokenize a string
+def tokeniza(chars, keyword=None):
+    """
+    Tokenize a string (duplicates keywords if any)
     """
     tokenizer = TweetTokenizer(preserve_case=False
                                ,strip_handles=True,reduce_len=True)
@@ -48,6 +49,8 @@ def tokenize(chars):
     return tokens
 
 def get_stopwords():
+    """ Deprecated: it's better to use 'english' default in sklearn vectorizer
+    """
     sw1 = stopwords.words('english')
     # sw2 = [unidecode(w) for w in sw1]
     # sw = list(set(sw1 + sw2))

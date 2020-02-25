@@ -14,15 +14,25 @@ X = datos.drop(columns='target')
 y = datos['target']
 
 #%% init pipeline
-pipeline = hm.Pipeline_NB()
+pipeline = hm.pipeline_nb()
 
-#%% Performance CV
-hm.kCV_pipe(pipeline, X, y, seed=semilla, k=5)
+#%% param_grid for GridSearch
+parameters = {
+    'feat_tfidf__selector__F': [0,1,2,3,4]
+    ,'feat_tfidf__tfidf__binary': [True, False]
+    ,'feat_tfidf__tfidf__max_df': [0.90, 0.95, 0.99, 1.00]
+    ,'feat_tfidf__tfidf__min_df': [0.00, 0.01, 0.02]
+    ,'feat_tfidf__tfidf__ngram_range': [(1,4)]
+    ,'feat_tfidf__tfidf__use_idf': [True, False]
+    ,'classifier__alpha': [0.1, 0.5, 0.8, 1.0, 2.0]
+}
 
+#%% GridSearch with K-CV
+gs = hm.grid_search_kcv_pipe(X, y, pipeline, parameters, 3)
 
+#%% save results
+gs_results = pd.DataFrame(gs.cv_results_)
+gs_results.to_csv('output/tables/gridsearch_naivebayes.csv')
 
-# # save mean and std to csv
-# pd.DataFrame(scores_a).agg(["mean","std"]).round(4).T.to_csv('output/cv_scores_tfidf.csv')
-# #%% Fit on all data and save
-# mod = pipe_a.fit(X_texto, y)
-# joblib.dump(mod, 'data/working/mod_tfidf.joblib')
+# #%% Performance CV
+# hm.kCV_pipe(pipeline, X, y, seed=semilla, k=5)

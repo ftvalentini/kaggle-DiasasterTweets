@@ -1,11 +1,12 @@
 import helpers_strings as hs
 
+import numpy as np
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.model_selection import cross_validate, StratifiedKFold
+from sklearn.model_selection import cross_validate, StratifiedKFold, GridSearchCV
 
 
 def read_tagged_data():
@@ -20,33 +21,36 @@ def read_untagged_data():
     test_data = pd.read_csv('data/raw/test.csv')
     return test_data
 
-class FeatSelector(BaseEstimator, TransformerMixin):
-    """ selects 'features' from DF in pipeline
+class TextSelector(BaseEstimator, TransformerMixin):
+    """ selects 'text' from DF in pipeline
+    (adds keywords F times to text -- F=0 means no adding)
     """
-    def __init__(self, features):
-        self.features = features
+    def __init__(self, F=0):
+        self.F = F
     def fit(self, df, y=None):
         return self
     def transform(self, df):
-        return df[self.features]
-    def get_feature_names(self):
-        return self.features
+        F = int(self.F)
+        text = df['text']
+        keyword = df['keyword'] + ' '
+        new_text = np.where(df['keyword'].notnull(), keyword * F + text, text)
+        return pd.Series(new_text)
 
-def Pipeline_NB():
+def pipeline_nb():
     """ pipeline to fit NB using only tfidf features from tweets' text
     """
-    sw = hs.get_stopwords()
-    feat_selector = FeatSelector(features='text')
+    # sw = hs.get_stopwords()
+    text_selector = TextSelector()
     tfidf = TfidfVectorizer(
                 preprocessor=hs.full_clean_text
-                ,tokenizer=hs.tokenize
+                ,tokenizer=hs.tokeniza
                 ,min_df=0.01
                 ,ngram_range=(1,4)
-                ,stop_words=sw
-                ,binary=True
+                ,stop_words='english'
+                ,binary=False
                 )
     feat_tfidf = Pipeline([
-                        ('selector', feat_selector)
+                        ('selector', text_selector)
                         ,('tfidf', tfidf)
                         ])
     classifier = MultinomialNB(alpha=1)
@@ -56,7 +60,22 @@ def Pipeline_NB():
         ])
     return pipe
 
-def kCV_pipe(modelo, X_data, Y_data, seed, k=5):
+def grid_search_kcv_pipe(X, y, pipeline, param_grid, k):
+    """
+    Run GridSearch with kCV on Pipeline
+    """
+    grid_search = GridSearchCV(pipeline, param_grid, cv=k
+                              ,return_train_score=True, refit=False,
+                               scoring={
+                                   'acc':'accuracy'
+                                   ,'prec':'precision_macro'
+                                   ,'rec':'recall_macro'
+                                   ,'f1':'f1_macro'
+                                }, verbose=1)
+    grid_search.fit(X, y)
+    return grid_search
+
+def kcv_pipe(modelo, X_data, Y_data, seed, k=5):
     """ perform k CrossValidation on initialised pipeline for classification
     """
     cv = StratifiedKFold(n_splits=k, shuffle=True, random_state=seed)
