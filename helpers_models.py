@@ -7,6 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import cross_validate, StratifiedKFold, GridSearchCV
+from sklearn.model_selection import train_test_split
 
 
 def read_tagged_data():
@@ -20,6 +21,13 @@ def read_untagged_data():
     """
     test_data = pd.read_csv('data/raw/test.csv')
     return test_data
+
+def clean_tagged_data(tagged_data):
+    """ remove duplicates from tagged data
+    (some of them have differing targets)
+    """
+    df = tagged_data.drop_duplicates(subset='text', keep='first')
+    return df
 
 class TextSelector(BaseEstimator, TransformerMixin):
     """ selects 'text' from DF in pipeline
@@ -87,5 +95,7 @@ def kcv_pipe(modelo, X_data, Y_data, seed, k=5):
     scores = cross_validate(modelo, X_data, Y_data, cv=cv, scoring=metrics
                             ,return_train_score=True)
     return scores
-    # return mean and std
-    # pd.DataFrame(scores_b).agg(["mean","std"]).round(4).T
+
+def split_data(X, y, val_size, randomstate):
+    ttsplit = train_test_split(X, y, test_size=val_size, random_state=randomstate)
+    return ttsplit
