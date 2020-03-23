@@ -23,6 +23,7 @@ def train_nn(model, X_train, y_train, X_val, y_val
     reduce_lr = ReduceLROnPlateau(monitor='val_acc', factor=decay_factor
                                   ,patience=decay_patience_n
                                   ,min_lr=0.0, cooldown=1, verbose=1)
+    mcp_save = ModelCheckpoint('best_model.hdf5', save_best_only=True, monitor='val_acc', mode='max', verbose=1)
     history = helpers.TrainingHistory()
     metrics = helpers.Metrics()
     # este sirve para hacer un plot en vivo -- pero anula el resto del output!
@@ -30,7 +31,7 @@ def train_nn(model, X_train, y_train, X_val, y_val
     # train
     mod.fit(X_train, y_train, batch_size=batch_size, epochs=epochs
             ,verbose=verbose, validation_data=(X_val, y_val)
-            ,callbacks=[early_stopper, reduce_lr, history, metrics])
+            ,callbacks=[early_stopper, reduce_lr, mcp_save, history, metrics])
     helpers.plot_history(history)
     return mod
 

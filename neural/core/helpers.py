@@ -22,7 +22,7 @@ class Metrics(Callback):
         self.val_recalls.append(val_recall)
         self.val_precisions.append(val_precision)
         print(
-            "- val_f1: {0:.4f} - val_prec: {1:.4f} - val_rec: {2:.4f} ".format(
+            "- val_f1: {0:.4f} - val_rec: {1:.4f} - val_prec: {2:.4f} ".format(
                 val_f1, val_recall, val_precision)
             )
         return

@@ -11,7 +11,7 @@ from keras.regularizers import l2
 def build_gru(tokenizer
               ,optimizer='adam'
               ,learn_rate=0.001, l2_strength=0.001, decay_strength=0.0, momentum=0.9
-              ,embedding_dim=128
+              ,embedding_dim=128, initializer='glorot_uniform'
               ):
     """
     Build and compile NN with GRU for classification
@@ -33,10 +33,10 @@ def build_gru(tokenizer
     mod.add(Embedding(vocab_size, embedding_dim
                         # ,input_length=seq_maxlen
                         ))
-    mod.add(CuDNNGRU(512, kernel_regularizer=regularizer))
-    mod.add(Dense(256, kernel_regularizer=regularizer))
+    mod.add(CuDNNGRU(512, kernel_regularizer=regularizer, kernel_initializer= initializer))
+    mod.add(Dense(256, kernel_regularizer=regularizer, kernel_initializer= initializer))
     mod.add(LeakyReLU(alpha=relu_leak))
-    mod.add(Dense(128, kernel_regularizer=regularizer))
+    mod.add(Dense(128, kernel_regularizer=regularizer, kernel_initializer= initializer))
     mod.add(LeakyReLU(alpha=relu_leak))
     mod.add(Dense(1, activation='sigmoid'))
     # compile
