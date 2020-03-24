@@ -18,19 +18,19 @@ def full_clean_text(chars):
     # remove weird characters
     chars = remove_bad_characters(chars)
     # remove links
-    chars = re.sub(r'https?:\/\/.*[\r\n]*', '', chars)
+    chars = re.sub(r'https?:\/\/.*[\r\n]*', '[url]', chars)
     # remove hashtags
-    chars = re.sub(r'#\S+', '', chars)
+    chars = re.sub(r'#\S+', '[hash]', chars)
     # remove #
     chars = re.sub(r'#', ' ', chars)
     # remove mentions
-    chars = re.sub(r'@\S+', '', chars)
+    chars = re.sub(r'@\S+', '[ment]', chars)
     # remove punctuation
     chars = "".join([char for char in chars if char not in string.punctuation])
     # remove some punctuation chars
     chars = re.sub(r'[-+_+¡+¿+]',' ',chars)
     # remove numbers
-    chars = re.sub(r'\d+',' ',chars)
+    chars = re.sub(r'\d+','[number]',chars)
     # replace accentuated chars for chars without accents
     match_replace = [('á|Á','a'),('é|É','e'),('í|Í','i'),('ó|Ó','o'),('ú|Ú','u')]
     for i in range(len(match_replace)):
