@@ -12,5 +12,5 @@ Si se cambia algun archivo hay que resetear la sesion. Runtime -> Restart and ru
 
 ---
 
-Tambien se puede abrir el Colab con el link de github.
+Tambien se puede abrir el Colab con el link de github.  
 Abrir un colab -> open notebook -> github -> Git URL 
