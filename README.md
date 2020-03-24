@@ -6,8 +6,8 @@ https://www.kaggle.com/c/nlp-getting-started
 
 ## Notas
 
-Abrir un colab -> open notebook -> upload ipynb local
-En menu de la izquierda upload de los archivos necesarios (data, scripts,etc)
+Abrir un colab -> open notebook -> upload ipynb local  
+En menu de la izquierda upload de los archivos necesarios (data, scripts,etc)  
 Si se cambia algun archivo hay que resetear la sesion. Runtime -> Restart and run all
 
 ---
