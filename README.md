@@ -6,6 +6,11 @@ https://www.kaggle.com/c/nlp-getting-started
 
 ## Notas
 
-Los Colab se pueden abrir con el link de github. Mas facil que copiar todo en una nueva o llevarlo a drive.
+Abrir un colab -> open notebook -> upload ipynb local
+En menu de la izquierda upload de los archivos necesarios (data, scripts,etc)
+Si se cambia algun archivo hay que resetear la sesion. Runtime -> Restart and run all
 
-Abrir un colab -> open notebook -> github -> Git URL -> Enjoy
+---
+
+Tambien se puede abrir el Colab con el link de github.
+Abrir un colab -> open notebook -> github -> Git URL 
