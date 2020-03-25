@@ -1,11 +1,11 @@
+# TODO: lograr reproducibilidad cuando se entrena la red
 import numpy as np
-
 from neural.core import helpers
-
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 # from livelossplot.keras import PlotLossesCallback
 
 def train_nn(model, X_train, y_train, X_val, y_val
+            ,model_id
             ,epochs, batch_size=32, early_stopping_n=99999, decay_factor=0.0
             ,decay_patience_n=5
             ,verbose=2):
@@ -16,14 +16,17 @@ def train_nn(model, X_train, y_train, X_val, y_val
     -- if decay_factor > 0:
             reduce LR when a metric does not improve for decay_patience_n epochs
             new_lr = lr * decay_factor (?)
+    -- model_id: name to save best model as h5
     """
     mod = model
     # callbacks
-    early_stopper = EarlyStopping(patience=early_stopping_n, verbose=1)
+    early_stopper = EarlyStopping(monitor='val_acc'
+                                  , patience=early_stopping_n, verbose=1)
     reduce_lr = ReduceLROnPlateau(monitor='val_acc', factor=decay_factor
                                   ,patience=decay_patience_n
                                   ,min_lr=0.0, cooldown=1, verbose=1)
-    mcp_save = ModelCheckpoint('best_model.hdf5', save_best_only=True, monitor='val_acc', mode='max', verbose=1)
+    mcp_save = ModelCheckpoint(model_id + '_best.hdf5', save_best_only=True
+                                , monitor='val_acc', mode='max', verbose=1)
     history = helpers.TrainingHistory()
     metrics = helpers.Metrics()
     # este sirve para hacer un plot en vivo -- pero anula el resto del output!
@@ -36,7 +39,7 @@ def train_nn(model, X_train, y_train, X_val, y_val
     return mod
 
 def full_nn(function_nn, X_train, y_train, X_val, y_val
-            ,epochs, batch_size=32, early_stopping_n=None
+            ,model_id, epochs, batch_size=32, early_stopping_n=None
             ,decay_factor=1, decay_patience_n=5, sanity_check_n=None
             ,vocab_size=None, pad_type='pre', seq_maxlen=100
             ,verbose=2
@@ -58,6 +61,7 @@ def full_nn(function_nn, X_train, y_train, X_val, y_val
     mod = function_nn(tokenizer, **kwargs_nn)
     trained_mod = train_nn(
                     mod, X_train_padded, y_train, X_val_padded, y_val
+                    , model_id=model_id
                     , epochs=epochs
                     , batch_size=batch_size
                     , early_stopping_n=early_stopping_n
