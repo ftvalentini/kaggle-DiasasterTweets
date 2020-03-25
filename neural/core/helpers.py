@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.callbacks import Callback
+from keras.layers import Embedding
 from sklearn.metrics import f1_score, recall_score, precision_score
 
 class Metrics(Callback):
@@ -76,6 +77,21 @@ def create_seqs(X_train, X_val, vocab_size=None, pad_type='pre', seq_maxlen=100)
     X_val_padded = pad_sequences(X_val_seq, maxlen=seq_maxlen, padding=pad_type)
     vocab_size = len(tokenizer.word_index) + 1
     return tokenizer, X_train_padded, X_val_padded
+
+def create_embedding_layer(tokenizer, embeddings_dict):
+    """
+    Create frozen embedding layer from tokenizer and a dictionary of pretrained embs
+    """
+    vocab_size = len(tokenizer.word_index) + 1
+    dim = len(embeddings_dict['man']) # dim of a common word to find dim general
+    embedding_matrix = np.zeros((vocab_size, dim))
+    for word, i in tokenizer.word_index.items():
+        embedding_vector = embeddings_dict.get(word)
+        if embedding_vector is not None:
+            embedding_matrix[i] = embedding_vector
+    emb_layer = Embedding(input_dim=vocab_size, output_dim=dim
+                          , weights=[embedding_matrix], trainable=False)
+    return emb_layer
 
 # class LearningPlot(Callback):
 #     """
