@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import helpers_strings as hs
 import helpers_models as hm
+import re
 
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
@@ -99,7 +100,7 @@ def create_embedding_layer(tokenizer, embeddings_dict):
                           , weights=[embedding_matrix], trainable=False)
     return emb_layer
 
-def submission(mod_name, output, tokenizer, param_tokenizer):
+def submission(mod_name, tokenizer, param_tokenizer):
     """
     Predicts on test data based on the model selected (hdf5)
     + generate the csv for submission to Kaggle
@@ -117,7 +118,7 @@ def submission(mod_name, output, tokenizer, param_tokenizer):
     predictions = best_mod.predict_classes(X_test_padded)
     submission = pd.DataFrame(datos_test['id'])
     submission['target'] = predictions
-    submission.to_csv(output, index = False)
+    submission.to_csv(re.sub('.hdf5', '', mod_name) + '_submission.csv', index = False)
 
 # class LearningPlot(Callback):
 #     """
