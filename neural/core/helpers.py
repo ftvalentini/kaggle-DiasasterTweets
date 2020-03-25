@@ -1,10 +1,14 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
+import helpers_strings as hs
+import helpers_models as hm
 
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.callbacks import Callback
 from sklearn.metrics import f1_score, recall_score, precision_score
+from keras.models import load_model
 
 class Metrics(Callback):
     def on_train_begin(self, logs={}):
@@ -68,6 +72,8 @@ def create_seqs(X_train, X_val, vocab_size=None, pad_type='pre', seq_maxlen=100)
     """
     Tokenize and create sequences on training + validation for classification
     """
+    X_train = pd.Series([hs.full_clean_text(t) for t in X_train])
+    X_val = pd.Series([hs.full_clean_text(t) for t in X_val])
     tokenizer = Tokenizer(num_words=vocab_size)
     tokenizer.fit_on_texts(X_train)
     X_train_seq = tokenizer.texts_to_sequences(X_train)
@@ -76,6 +82,27 @@ def create_seqs(X_train, X_val, vocab_size=None, pad_type='pre', seq_maxlen=100)
     X_val_padded = pad_sequences(X_val_seq, maxlen=seq_maxlen, padding=pad_type)
     vocab_size = len(tokenizer.word_index) + 1
     return tokenizer, X_train_padded, X_val_padded
+
+
+def submission(mod_name, output, tokenizer, param_tokenizer):
+    """
+    Predicts on test data based on the model selected (hdf5)
+    + generate the csv for submission to Kaggle
+    """
+    best_mod = load_model(mod_name)
+    datos_test = hm.read_untagged_data()
+    X_test = datos_test['text']
+    X_test = pd.Series([hs.full_clean_text(t) for t in X_test])
+    X_test_seq = tokenizer.texts_to_sequences(X_test)
+    param_tokenizer_pad = dict(
+        maxlen=param_tokenizer['seq_maxlen'],
+        padding=param_tokenizer['pad_type']
+    )
+    X_test_padded = pad_sequences(X_test_seq,**param_tokenizer_pad)
+    predictions = best_mod.predict_classes(X_test_padded)
+    submission = pd.DataFrame(datos_test['id'])
+    submission['target'] = predictions
+    submission.to_csv(output, index = False)
 
 # class LearningPlot(Callback):
 #     """
