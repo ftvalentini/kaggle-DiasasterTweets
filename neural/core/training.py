@@ -69,4 +69,4 @@ def full_nn(function_nn, X_train, y_train, X_val, y_val
                     , decay_patience_n=decay_patience_n
                     , verbose=verbose
                     )
-    return trained_mod
+    return trained_mod, tokenizer
