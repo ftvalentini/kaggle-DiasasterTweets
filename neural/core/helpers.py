@@ -76,6 +76,8 @@ def create_seqs(X_train, X_val, vocab_size=None, pad_type='pre', seq_maxlen=100)
     """
     X_train = pd.Series([hs.full_clean_text(t) for t in X_train])
     X_val = pd.Series([hs.full_clean_text(t) for t in X_val])
+    X_train = pd.Series([hs.modify_abbrev(t) for t in X_train])
+    X_val = pd.Series([hs.modify_abbrev(t) for t in X_val])
     tokenizer = Tokenizer(num_words=vocab_size)
     tokenizer.fit_on_texts(X_train)
     X_train_seq = tokenizer.texts_to_sequences(X_train)
