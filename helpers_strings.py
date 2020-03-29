@@ -40,6 +40,7 @@ def full_clean_text(chars):
     return chars.strip()
 
 # Thanks to https://www.kaggle.com/rftexas/text-only-kfold-bert
+# Replace abbreviations with full text
 abbreviations = {
     "$" : " dollar ",
     "€" : " euro ",
