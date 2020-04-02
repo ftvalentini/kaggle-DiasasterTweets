@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 from neural.core import helpers
 
-from keras.models import Sequential
-from keras.layers import Embedding, Dense, CuDNNGRU, LeakyReLU, Bidirectional
+from keras.models import Sequential, Model
+from keras.layers import Embedding, Dense, CuDNNGRU, LeakyReLU, Bidirectional, Input, Dropout
 from keras.optimizers import Adam, SGD
 from keras.regularizers import l2
 
