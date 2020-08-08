@@ -15,9 +15,19 @@ In order to make it more model friendly we replaced many social media abbreviati
 
 ## Models
 
+First of all  we ran a Naive Bayes model and a Logistic Regression to quickly have some kind of benchmark without incurring into more complex models. We got an F1 score of around 0.67 in test for both models.
+
+Nowadays, the models that are shining in NLP tasks are the neural networks with their different architectures.  
+We moved to a Google Colab environment to be able to run such resource intensive models. We used TensorFlow to fit the neural networks.
+
+At this point we spent considerable time researching and reading about the different approachs and their differences. We started an interative process where we tried them and compared results after doing hyperparameter tuning.  
+Among the different architectures we tried there were: Forward NN, LSTM, GRU and BIGRU but also  pretrained models such as Glove.   
+In the end, what gave us the best results (not only in our test set but also in the submission to Kaggle) was a BERT based model leveraging over Google's efforts. It's not surprising since BERT is (or was back then) prettyy much the state of the art technique. 
 
 ## Results
 
+We achieved roughly an F1 score of 0.83 in the submission (that is not seen at during training) which is quite remarkable comparing to our benchmarks. It was also quite good in comparison to other participants as we moved up the ladder signifacntly.  
+The model was able to classify with acceptable confidence if a non seen tweet during training was refering to some natural disaster or not, which is useful as an extra tool to quickly spot dangerous situations to the population or to later on get better understanding of how the turmoil was seen by the people present there.
 
 
 
