@@ -8,7 +8,7 @@ The data has a simple structure. ID, keyword (if available), location (if availa
 We did some exploratory analysis to get a sense of the data we had at our hands. Some highlights:  
 * Balanced classes
 * Location is missing on half of the dataset
-* More frequest Keywords are related to disasters
+* More frequent Keywords are related to disasters
 
 We also cleaned the text with usual string preprocessing techniques such as removing badly formatted characters and stopwords, we also trimmed the text and  removed some twitter specifics like mentions and hashtags.  
 In order to make it more model friendly we replaced many social media abbreviations by their full length format. Ex: afaik -> "as far as I know".
